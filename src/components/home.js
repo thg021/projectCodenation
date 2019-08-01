@@ -42,14 +42,10 @@ class Home extends Component {
                 }
               })
              this.setState({repository: response.data})
-
-              
-
+             console.log(response.data)
         } catch (error) {
             console.log(error)
         }
-
-       
     }
 
     getTotalRepositoryYear = (repository) => {
@@ -63,10 +59,7 @@ class Home extends Component {
              }
             return obj
         },{})
-        for(let teste in repositoryDate){
-           console.log('Aqui',teste, repositoryDate[teste])       
-        }
-     
+
         return repositoryDate
     }
 
@@ -90,7 +83,7 @@ class Home extends Component {
 
         return (
             <RepositoryList>
-                
+                <h1>Lista 1</h1>
                 {
                     Object.keys(yearsRepository).map(key => (
                         <div key={key}>  
@@ -99,28 +92,18 @@ class Home extends Component {
                         </div>
                     )).reverse()
                 }
-
-{
+                <h1>Lista 2</h1>
+                {
                     Object.keys(yearsRepository).map(key => (
                         <div key={key}>  
-                            <strong>{key}</strong>
+                            <h2>{key}</h2>
                            {
                                this.listRepositoryByYear(key)
                            }
                         </div>
                     )).reverse()
                 }
-                            
-                {/*
-                   
-                    repository.map(item => (
-                        <Article key={item.id}>
-                            <strong>{item.name}</strong>
-                            <CreatedDate>{item.created_at}</CreatedDate>
-                        </Article>
-                        
-                    ))*/
-                }
+
             </RepositoryList>
         )
     }
