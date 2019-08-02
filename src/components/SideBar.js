@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { createGlobalStyle } from 'styled-components';
 import api from '../services/api'
+import { connect } from 'react-redux'
+import { dispatch } from 'rxjs/internal/observable/pairs';
+import { getUser } from '../store/actions/getUser'
+
 
 const GlobalStyleSideBar = createGlobalStyle`
     .sideBar {
@@ -59,14 +63,14 @@ class SideBar extends Component{
 
     state = {
         repository: [], 
-        avatar: '', 
-        user: '', 
-        login: ''
     }
+
+    
 
     componentDidMount(){
         this.loadRepositories()
-        this.loadUserInfo()
+        this.props.getUser('thg021')
+       
     }
 
     loadRepositories = async () => {
@@ -89,27 +93,6 @@ class SideBar extends Component{
        
     }
 
-    loadUserInfo = async () => {
-        try {
-            const response = await api.get('/users/thg021')
-            const user = response.data.name
-            const avatar = response.data.avatar_url
-            const login = response.data.login
-     
-              this.setState({
-                  user, 
-                  avatar, 
-                  login
-              })
-              
-
-        } catch (error) {
-            console.log(error)
-        }
-
-       
-    }
-
     getTotalRepositoryYear = (repository) => {
         let repositoryDate = repository.map(item => {      
             return item.created_at.slice(0,4)
@@ -120,11 +103,7 @@ class SideBar extends Component{
                  obj[item]++
              }
             return obj
-        },{})
-        for(let teste in repositoryDate){
-           console.log('Aqui',teste, repositoryDate[teste])       
-        }
-     
+        },{})     
         return repositoryDate
     }
 
@@ -137,11 +116,12 @@ class SideBar extends Component{
         return(
         <div>
             <GlobalStyleSideBar />
+
             <div className='sideBar'>
                 <div className="UserProfile">
-                    <img src={this.state.avatar}  alt='Smiley face'/>
-                    <h3>{this.state.user}</h3>
-                    <p className="gitUser">{this.state.login}</p>
+                    <img src={this.props.data.avatar_url}  alt='Smiley face'/>
+                    <h3>{this.props.data.name}</h3>
+                    <p className="gitUser">{this.props.data.login}</p>
                     <div className="resume">
                         Front-end developer, ReactJs,Redux, Javascript and NodeJs
                     </div>
@@ -166,4 +146,19 @@ class SideBar extends Component{
     }
 }
 
-export default SideBar
+const mapStateToProps = (state) => {
+    return {
+        data: state.getUserReducer.data,
+        loading: state.getUserReducer.loading, 
+        erro: state.getUserReducer.erro
+    }
+     
+}
+
+const mapDispatchProps = (dispatch) => {
+    return {
+        getUser: (user) => dispatch(getUser(user))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchProps)(SideBar)
