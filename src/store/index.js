@@ -1,13 +1,11 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux'
 import reducers from './reducers'
-import logger from 'redux-logger'
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const middlewares = [thunk, logger]
+import promise from 'redux-promise'
+import thunk from 'redux-thunk'
 
-const store = createStore(reducers, composeEnhancers(
-    applyMiddleware(...middlewares)
-))
+const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+
+const store = applyMiddleware(thunk, promise)(createStore)(reducers, devTools)
 
 export default store

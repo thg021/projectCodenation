@@ -1,38 +1,46 @@
 import React, { Component } from 'react'
-import { createGlobalStyle } from 'styled-components';
-const GlobalStyleSideBar = createGlobalStyle`
-    .navBar {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: 64px;
-        padding-left: 60px;
-        padding-right: 60px;
-    }
 
-    .UserProfile > img {
-        height: 80px;
-        width: 80px;
-        border-radius: 50%;
-        border: 4px solid #fff;
-    }
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-    .input{
-        padding: 10px;
-        width: 100%;
-        border: 1px #ddd solid;
-        border-radius: 5px;
-    }
-`
+import { searchRepository , handlerChanger} from '../store/actions/getRepository'
+
 class NavBar extends Component{
+    constructor(props){
+        super(props)
+
+        this.handlerSearch = this.handlerSearch.bind(this)
+    }
+
+
+    handlerSearch = (value) => {
+        const { searchRepository } = this.props
+        searchRepository(value)
+
+   }
+
+
     render(){
+        let {  handlerChanger, value } = this.props
+
+        //const { data } = this.props.dataSearch.data
         return(
             <div className="navBar">
-                <GlobalStyleSideBar />
-                <input type="search" className="input" placeholder="Search Github ..."></input>
+             
+                <input type="search" onChange={handlerChanger} value={value || ''} className="input" placeholder="Search Github ..."></input>
+                <button className="btn" onClick={() => this.handlerSearch(value)}>search</button>
             </div>
         )
     }
 }
 
-export default NavBar
+
+const mapDispatchProps = (dispatch) => bindActionCreators({ searchRepository, handlerChanger }, dispatch)
+const mapStateToProps = (state) =>  ({
+    dataRepository: state.repository.dataSearchRepository,
+    value: state.repository.value,
+    search: state.repository.search
+
+})
+
+export default connect(mapStateToProps, mapDispatchProps)(NavBar)
